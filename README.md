@@ -1,1 +1,1 @@
-# sb_kiddie-
+# script kiddie
