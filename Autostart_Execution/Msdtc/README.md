@@ -5,3 +5,10 @@ sc qc msdtc
 sc config msdtc obj= LocalSystem  //设置System启动，默认network
 sc config msdtc start= auto
 ```
+
+### 测试触发
+
+```
+net stop msdtc
+net start msdtc
+```
