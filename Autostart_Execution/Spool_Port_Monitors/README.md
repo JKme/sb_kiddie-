@@ -7,6 +7,13 @@ reg add "hklm\system\currentcontrolset\control\print\monitors\monitor" /v "Drive
 ```
 因为打印机是以`System`权限启动的，一般机器都是开机启动，这个是很不错的后门方式，在dll里面可以增加分离免杀或者更新dll的功能，这个dll可以设置多个，只要键名不一样即可。
 
+### 测试触发
+
+```
+sc stop spooler
+sc start spooler
+```
+
 ### 排查后门
 
 正常情况下打印机的注册表是下面这几个，位置:`\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Print\Monitors\`
