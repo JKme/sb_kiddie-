@@ -29,3 +29,44 @@ def spider():
 
 if __name__ == "__main__":
     spider()
+
+    
+    
+from selenium.webdriver import Chrome
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import re
+import time
+
+
+def spider():
+    # option = webdriver.ChromeOptions()
+    # option.add_experimental_option("--headless")
+    # option.add_experimental_option("detach", True)
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+
+    web = Chrome(options=chrome_options)
+
+    web.get('https://ngabbs.com/read.php?tid=27586426&authorid=61078637&page=3')
+
+    time.sleep(3)  # 睡眠2秒
+    html = web.find_element_by_xpath("//*").get_attribute("outerHTML")
+    print(html)
+    getContents(html)
+    # web.find_element_by_xpath('//*[@id="pagebtop"]/table/tbody/tr/td[4]/a').click()
+
+
+def getContents(html):
+    pattern = re.compile(r"<span id=\"postcontent(\d+)\" class=\"postcontent ubbcode\">(.*?)<img.*?src=\"(.*?)\"")
+    match = re.findall(pattern, html)
+    if match:
+        print(match)
+
+
+if __name__ == "__main__":
+    spider()
+
+    
+    
