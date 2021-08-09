@@ -31,7 +31,7 @@ if __name__ == "__main__":
     spider()
 
     
-    
+#/var/tmp/stock.txt 40|3
 from selenium.webdriver import Chrome
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
