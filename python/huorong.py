@@ -56,7 +56,7 @@ def spider():
     time.sleep(3)  # 睡眠2秒
     html = web.find_element_by_xpath("//*").get_attribute("outerHTML")
 
-    pattern = re.compile(r"<span id=\"postcontent(\d+)\" class=\"postcontent ubbcode\">(.*?)<img.*?src=\"(.*?)\"")
+    pattern = re.compile(r"<span id=\"postcontent(\d+)\" class=\"postcontent ubbcode\">(.*?)<img.*?src=\"(.*?)\"",re.DOTALL)
     match = re.findall(pattern, html)
     lastContent = match[-1:][0]
     msg_num = lastContent[0]
